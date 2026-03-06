@@ -1,0 +1,1605 @@
+/* ============================================================
+   style.css — Menna's Birthday Site · Deep Polish Edition
+   Mobile-first · iPhone-optimised · Romantic & elegant
+   ============================================================
+
+   Palette
+   ──────────────────────────────────────────────
+   --cream       #f5ece0   warm parchment page
+   --ivory       #efe3d3   deeper parchment
+   --paper       #fefcf8   letter paper (near-white, warm)
+   --blush       #d6a48a   soft blush
+   --rose        #b46b54   dusty rose
+   --rose-deep   #8b4132   deep rose / punch
+   --gold        #b58d48   champagne gold
+   --gold-lt     #d9c490   light gold for rules
+   --gold-warm   rgba(181,141,72,0.14)
+   --warm-dark   #2b1d12   richest warm brown
+   --warm-mid    #5a3c2e   mid warm brown
+   --text        #241710   near-black body text
+   --text-soft   #765040   muted label text
+
+   Fonts
+   ──────────────────────────────────────────────
+   Cormorant Garamond — all editorial / letter copy
+   Jost               — UI labels, buttons, captions
+   ============================================================ */
+
+:root {
+  --cream:      #f5ece0;
+  --ivory:      #efe3d3;
+  --paper:      #fefcf8;
+  --blush:      #d6a48a;
+  --rose:       #b46b54;
+  --rose-deep:  #8b4132;
+  --gold:       #b58d48;
+  --gold-lt:    #d9c490;
+  --gold-warm:  rgba(181,141,72,0.13);
+  --warm-dark:  #2b1d12;
+  --warm-mid:   #5a3c2e;
+  --text:       #241710;
+  --text-soft:  #765040;
+
+  /* Easings */
+  --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.44, 0.64, 1);
+  --ease-soft:   cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-flap:   cubic-bezier(0.42, 0.06, 0.18, 1.0);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+button {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  border: none;
+  cursor: pointer;
+  background: none;
+}
+
+/* ============================================================
+   GRAIN — paper noise, barely perceptible
+   ============================================================ */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 185px 185px;
+  mix-blend-mode: multiply;
+}
+
+/* ============================================================
+   SCREENS — blur-in transition for cinematic focus-pull
+   ============================================================ */
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(16px) scale(0.984);
+  transition:
+    opacity   0.82s var(--ease-expo),
+    transform 0.82s var(--ease-expo);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  will-change: opacity, transform;
+}
+
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0) scale(1);
+  z-index: 10;
+}
+
+.screen.exit {
+  opacity: 0;
+  transform: translateY(-12px) scale(1.012);
+  pointer-events: none;
+  transition:
+    opacity   0.46s var(--ease-soft),
+    transform 0.46s var(--ease-soft);
+}
+
+/* ============================================================
+   FLOATING PARTICLES — whisper-quiet, depth-of-field by size
+   ============================================================ */
+#hearts-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.float-heart {
+  position: absolute;
+  bottom: -50px;
+  opacity: 0;
+  user-select: none;
+  will-change: transform, opacity;
+  animation:
+    particleRise  var(--dur, 15s) linear      var(--delay, 0s) infinite,
+    particleDrift var(--dur, 15s) ease-in-out var(--delay, 0s) infinite;
+}
+
+@keyframes particleRise {
+  0%   { opacity: 0;               transform: translateY(0)      scale(0.85) rotate(0deg); }
+  8%   { opacity: var(--op, 0.12); }
+  75%  { opacity: calc(var(--op, 0.12) * 0.35); }
+  100% { opacity: 0;               transform: translateY(-116vh) scale(1.10) rotate(var(--spin, 20deg)); }
+}
+
+@keyframes particleDrift {
+  0%   { margin-left: 0; }
+  32%  { margin-left: var(--da, 12px); }
+  65%  { margin-left: var(--db, -9px); }
+  100% { margin-left: 0; }
+}
+
+/* ============================================================
+   ORNAMENT — delicate gold rule with diamond
+   ============================================================ */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: appearFade 1.1s var(--ease-expo) 0.12s forwards;
+}
+
+.orn-line {
+  display: block;
+  height: 1px;
+  width: 56px;
+  background: linear-gradient(90deg, transparent, var(--gold-lt), transparent);
+}
+
+.orn-diamond {
+  font-size: 0.56rem;
+  color: var(--gold);
+  line-height: 1;
+  opacity: 0.60;
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   KEYFRAMES — shared across site
+   ============================================================ */
+
+/* Cinematic: rise + gentle fade-in */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Simple opacity only */
+@keyframes appearFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+/* Primary filled pill */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 34px;
+  padding: 16px 44px;
+  background: linear-gradient(144deg, var(--rose) 0%, var(--rose-deep) 100%);
+  color: #fff;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: 0.76rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  box-shadow:
+    0  8px 32px rgba(139,65,50,0.44),
+    0  2px  8px rgba(139,65,50,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    inset 0 -1px 0 rgba(0,0,0,0.08);
+  transition:
+    transform  0.22s var(--ease-spring),
+    box-shadow 0.22s ease;
+}
+
+/* Travelling light shimmer */
+.btn-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    112deg,
+    transparent 34%,
+    rgba(255,255,255,0.28) 50%,
+    transparent 66%
+  );
+  transform: translateX(-130%);
+  pointer-events: none;
+  animation: shimmerPass 5s ease 2.5s infinite;
+}
+
+@keyframes shimmerPass {
+  0%   { transform: translateX(-130%); }
+  20%  { transform: translateX(230%); }
+  100% { transform: translateX(230%); }
+}
+
+.btn-primary:active {
+  transform: scale(0.93) translateY(1px);
+  box-shadow:
+    0 2px 12px rgba(139,65,50,0.32),
+    0 1px  4px rgba(139,65,50,0.18);
+}
+
+/* Breathing glow for "Make a wish" CTA */
+.btn-primary.glow {
+  animation: breathGlow 3s ease-in-out infinite;
+}
+
+@keyframes breathGlow {
+  0%, 100% {
+    box-shadow:
+      0 8px 32px rgba(139,65,50,0.42),
+      0 2px 8px  rgba(139,65,50,0.26),
+      inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+  50% {
+    box-shadow:
+      0 8px 56px rgba(139,65,50,0.72),
+      0 2px 10px rgba(139,65,50,0.34),
+      inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+}
+
+/* Ghost outlined button */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+  padding: 13px 36px;
+  background: rgba(254,252,248,0.58);
+  color: var(--rose-deep);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.08rem;
+  letter-spacing: 0.03em;
+  border: 1px solid rgba(181,141,72,0.36);
+  border-radius: 100px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition:
+    background   0.26s ease,
+    border-color 0.26s ease,
+    transform    0.22s var(--ease-spring);
+}
+
+.btn-ghost:active {
+  background: rgba(214,164,138,0.28);
+  border-color: var(--blush);
+  transform: scale(0.96);
+}
+
+/* Music toggle */
+.music-btn {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.63rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--rose);
+  opacity: 0.48;
+  padding: 12px 18px;
+  white-space: nowrap;
+  transition: opacity 0.26s ease, color 0.26s ease;
+}
+
+.music-btn:active  { opacity: 1; }
+.music-btn.playing { color: var(--gold); opacity: 0.78; }
+.music-note        { font-size: 0.86rem; line-height: 1; }
+
+/* ============================================================
+   SCREEN 1 — INTRO
+   ============================================================ */
+#screen-intro {
+  background: var(--cream);
+  text-align: center;
+  overflow: hidden;
+  /* Very faint diagonal lattice — barely visible, adds tactile richness */
+}
+
+/* Lattice texture */
+#screen-intro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 38px,
+      rgba(181,141,72,0.022) 38px,
+      rgba(181,141,72,0.022) 39px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 38px,
+      rgba(181,141,72,0.016) 38px,
+      rgba(181,141,72,0.016) 39px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Multi-blob ambient glow — slow meditative drift */
+.intro-glow {
+  position: absolute;
+  inset: -30%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 68% 52% at 50% 32%, rgba(218,168,138,0.62) 0%, transparent 64%),
+    radial-gradient(ellipse 44% 36% at 82% 74%, rgba(181,141,72,0.28) 0%, transparent 58%),
+    radial-gradient(ellipse 36% 26% at 12% 66%, rgba(180,107,84,0.20) 0%, transparent 52%);
+  animation: glowDrift 18s ease-in-out infinite;
+}
+
+@keyframes glowDrift {
+  0%   { opacity: 0.80; transform: scale(1.00) translate(  0px,   0px); }
+  25%  { opacity: 0.96; transform: scale(1.04) translate(  9px,  -6px); }
+  50%  { opacity: 0.88; transform: scale(1.02) translate( -5px,   8px); }
+  75%  { opacity: 1.00; transform: scale(1.06) translate(  4px,  -3px); }
+  100% { opacity: 0.80; transform: scale(1.00) translate(  0px,   0px); }
+}
+
+.intro-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intro-eyebrow {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  opacity: 0;
+  animation: fadeUp 1.0s var(--ease-expo) 0.32s forwards;
+}
+
+.intro-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(2.75rem, 11vw, 3.65rem);
+  line-height: 1.08;
+  color: var(--warm-dark);
+  letter-spacing: -0.022em;
+  /* Dimensionality: warm amber shadow */
+  text-shadow: 0 2px 28px rgba(139,65,50,0.12), 0 1px 4px rgba(139,65,50,0.06);
+  opacity: 0;
+  animation: fadeUp 1.1s var(--ease-expo) 0.52s forwards;
+}
+
+.intro-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--rose-deep);
+  text-shadow: 0 2px 20px rgba(139,65,50,0.18);
+}
+
+.intro-subtitle {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 0.86rem;
+  color: var(--text-soft);
+  letter-spacing: 0.06em;
+  line-height: 1.76;
+  margin-top: 16px;
+  opacity: 0;
+  animation: fadeUp 1.0s var(--ease-expo) 0.76s forwards;
+}
+
+/* ============================================================
+   SCREEN 2 — ENVELOPE
+   ============================================================ */
+#screen-envelope {
+  background: var(--cream);
+  background-image:
+    radial-gradient(ellipse 70% 60% at 50% 60%, rgba(214,164,138,0.40) 0%, transparent 72%),
+    radial-gradient(ellipse 40% 28% at 50%  6%, rgba(217,196,154,0.16) 0%, transparent 55%);
+}
+
+.envelope-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeUp 0.85s var(--ease-expo) 0.06s both;
+}
+
+/* Outer wrapper owns the float animation */
+.envelope-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: envFloat 4.4s ease-in-out infinite;
+}
+
+.envelope-wrap.open { animation: none; }
+
+/* Cast shadow on the "surface" below the envelope */
+.envelope-ground {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 78%;
+  height: 22px;
+  background: radial-gradient(ellipse at center,
+    rgba(55,24,8,0.26) 0%,
+    transparent 72%
+  );
+  filter: blur(7px);
+  /* Compresses slightly during the float rise */
+  animation: shadowPulse 4.4s ease-in-out infinite;
+  transition: opacity 0.6s ease, width 0.6s ease;
+}
+
+.envelope-wrap.open .envelope-ground {
+  opacity: 0.3;
+  width: 55%;
+}
+
+@keyframes envFloat {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-7px); }
+}
+
+@keyframes shadowPulse {
+  0%, 100% { transform: translateX(-50%) scaleX(1.00); opacity: 1; }
+  50%       { transform: translateX(-50%) scaleX(0.86); opacity: 0.65; }
+}
+
+/* The clickable envelope element */
+.envelope {
+  position: relative;
+  width: 288px;
+  height: 194px;
+  cursor: pointer;
+  /* Perspective here gives the 3-D flap its depth */
+  perspective: 1100px;
+  perspective-origin: 50% -6%;
+}
+
+/* ── Envelope body ── */
+.env-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px 4px 10px 10px;
+  overflow: hidden;
+  background: linear-gradient(176deg, #ecdac4 0%, #d4b48e 52%, #c7a37a 100%);
+  box-shadow:
+    0 22px 70px rgba(46,18,4,0.28),
+    0  6px 20px rgba(46,18,4,0.16),
+    inset 0 -5px 18px rgba(0,0,0,0.06),
+    inset 0  1px  5px rgba(255,255,255,0.28);
+}
+
+/* Airmail postal stripe — red/blue alternating along the envelope edge */
+.env-postal {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--rose-deep)  0px,
+    var(--rose-deep)  9px,
+    transparent       9px,
+    transparent       13px,
+    #4a6fa5           13px,
+    #4a6fa5           22px,
+    transparent       22px,
+    transparent       26px
+  );
+  opacity: 0.55;
+  border-radius: 4px 4px 0 0;
+}
+
+/* Matching stripe along the bottom */
+.env-postal-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--rose-deep)  0px,
+    var(--rose-deep)  9px,
+    transparent       9px,
+    transparent       13px,
+    #4a6fa5           13px,
+    #4a6fa5           22px,
+    transparent       22px,
+    transparent       26px
+  );
+  opacity: 0.40;
+  border-radius: 0 0 10px 10px;
+}
+
+/* Inner lining — revealed when flap opens */
+.env-interior {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(174deg, #f8f0e4 0%, #f2e6d0 100%);
+  /* Very faint diagonal stripe pattern — like tissue lining */
+  background-image:
+    linear-gradient(174deg, #f8f0e4 0%, #f2e6d0 100%),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 9px,
+      rgba(181,141,72,0.06) 9px,
+      rgba(181,141,72,0.06) 10px
+    );
+  opacity: 0;
+  transition: opacity 0.55s ease 0.35s;
+  pointer-events: none;
+}
+
+.envelope-wrap.open .env-interior {
+  opacity: 1;
+}
+
+/* V-crease fold lines */
+.env-crease {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(104,58,22,0.13);
+}
+
+.env-crease-l {
+  transform-origin: bottom left;
+  transform: rotate(-35deg) scaleX(1.9);
+}
+
+.env-crease-r {
+  transform-origin: bottom right;
+  transform: rotate(35deg) scaleX(1.9);
+}
+
+/* Subtle fold-depth shadow on lower half */
+.env-body::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 48%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.038) 100%);
+  pointer-events: none;
+}
+
+/* ── Wax seal — embossed with ring + specular highlight ── */
+.env-seal {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: radial-gradient(circle at 38% 32%, #cc8470, var(--rose-deep) 70%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  box-shadow:
+    0  4px 20px rgba(139,65,50,0.60),
+    0  1px  6px rgba(139,65,50,0.34),
+    inset 0  1px 0 rgba(255,255,255,0.26),
+    inset 0 -1px 0 rgba(0,0,0,0.12);
+  animation: sealGlow 2.8s ease-in-out infinite;
+  transition: transform 0.50s var(--ease-spring), opacity 0.42s ease, box-shadow 0.42s ease;
+}
+
+/* Embossed ring */
+.env-seal::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.20);
+  pointer-events: none;
+}
+
+/* Specular highlight — that little gem-like glint */
+.env-seal::after {
+  content: '';
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  width: 11px;
+  height: 8px;
+  background: rgba(255,255,255,0.28);
+  border-radius: 50%;
+  filter: blur(2.5px);
+  transform: rotate(-30deg);
+  pointer-events: none;
+}
+
+@keyframes sealGlow {
+  0%, 100% {
+    box-shadow:
+      0 4px 20px rgba(139,65,50,0.56), 0 1px 6px rgba(139,65,50,0.30),
+      inset 0 1px 0 rgba(255,255,255,0.26), inset 0 -1px 0 rgba(0,0,0,0.12);
+  }
+  50% {
+    box-shadow:
+      0 5px 36px rgba(139,65,50,0.82), 0 1px 8px rgba(139,65,50,0.42),
+      inset 0 1px 0 rgba(255,255,255,0.26), inset 0 -1px 0 rgba(0,0,0,0.12);
+  }
+}
+
+.env-seal span {
+  color: rgba(255,255,255,0.96);
+  font-size: 0.92rem;
+  line-height: 1;
+  margin-top: 1px;
+  position: relative;
+  z-index: 1;
+}
+
+.envelope-wrap.open .env-seal {
+  animation: none;
+  transform: translate(-50%, -50%) scale(0.78);
+  opacity: 0.44;
+}
+
+/* ── Flap wrapper (3-D container) ── */
+.env-flap-wrap {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 52%;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  transition: transform 1.2s var(--ease-flap);
+  z-index: 6;
+}
+
+.envelope-wrap.open .env-flap-wrap {
+  transform: rotateX(-180deg);
+}
+
+/* Outer (front) flap triangle */
+.env-flap {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(172deg, #bd8e64 0%, #aa7a4e 100%);
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 4px 4px 0 0;
+  box-shadow: inset 0 -9px 20px rgba(0,0,0,0.09);
+}
+
+/* Subtle highlight at flap top edge */
+.env-flap::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 6%, rgba(255,255,255,0.22) 50%, transparent 94%);
+  border-radius: 4px 4px 0 0;
+}
+
+/* Inner flap face — visible when folded open (lighter parchment) */
+.env-flap-back {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(172deg, #f5ebd8 0%, #ede0c8 100%);
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  border-radius: 4px 4px 0 0;
+  /* Pre-rotated 180° — its front face is visible when the wrapper flips over */
+  transform: rotateX(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ── Letter peeking out after open ── */
+.env-letter-peek {
+  position: absolute;
+  left: 15px; right: 15px;
+  top: 16px; bottom: 11px;
+  background: var(--paper);
+  border-radius: 3px;
+  padding: 14px 16px 10px;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity   0.60s ease           0.65s,
+    transform 0.88s var(--ease-expo) 0.55s;
+  box-shadow:
+    0 2px 14px rgba(0,0,0,0.10),
+    inset 0 0 0 0.5px rgba(181,141,72,0.14);
+}
+
+.envelope-wrap.open .env-letter-peek {
+  opacity: 1;
+  transform: translateY(-56px);
+}
+
+.peek-top-rule {
+  height: 1.5px;
+  width: 24%;
+  background: linear-gradient(90deg, var(--rose) 0%, transparent 100%);
+  border-radius: 2px;
+  margin-bottom: 9px;
+}
+
+.peek-line {
+  height: 1.5px;
+  background: linear-gradient(90deg, rgba(181,141,72,0.36) 0%, transparent 80%);
+  border-radius: 2px;
+  margin-bottom: 8px;
+}
+
+.peek-line.short   { width: 72%; }
+.peek-line.shorter { width: 48%; }
+
+/* Tap hint — gently pulses */
+.envelope-hint {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.96rem;
+  color: var(--text-soft);
+  letter-spacing: 0.04em;
+  margin-top: 30px;
+  opacity: 0;
+  animation: hintBreath 3s ease-in-out 0.6s infinite;
+  transition: opacity 0.4s ease;
+}
+
+.envelope-hint.hidden { opacity: 0 !important; pointer-events: none; }
+
+@keyframes hintBreath {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 0.80; }
+}
+
+/* ============================================================
+   SCREEN 3 — LETTER  (scrollable)
+   ============================================================ */
+#screen-letter {
+  position: fixed;
+  justify-content: flex-start;
+  padding: 36px 18px 68px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--cream);
+  background-image:
+    radial-gradient(ellipse 100% 30% at 50% 0%, rgba(217,196,144,0.20) 0%, transparent 55%);
+  overscroll-behavior: contain;
+}
+
+/* ── Letter paper card ──
+   The emotional centrepiece. Looks like premium writing paper. ── */
+.letter-paper {
+  position: relative;
+  background: var(--paper);
+  border-radius: 12px;
+  /* Left indent: 50px clears the margin rule at 36px */
+  padding: 38px 30px 46px 50px;
+  max-width: 480px;
+  width: 100%;
+  overflow: hidden;
+
+  /* 6-layer shadow — gold lip + ambient + close + right-curl + inner rim */
+  box-shadow:
+    0  1px  0   rgba(181,141,72,0.46),      /* gold top lip          */
+    0  2px  0   rgba(181,141,72,0.15),      /* second lip            */
+    0 18px 72px rgba(46,18,4,0.13),         /* ambient depth         */
+    0  5px 16px rgba(46,18,4,0.09),         /* close shadow          */
+    4px 8px 24px rgba(46,18,4,0.05),        /* right page curl       */
+    inset 0 0 0 1px rgba(217,196,144,0.20); /* inner gold rim        */
+}
+
+/* Warm gold shimmer bar along top edge */
+.letter-paper::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(217,196,144,0.55) 22%,
+    rgba(181,141,72,0.85) 58%,
+    transparent 100%
+  );
+}
+
+/* Large faint watermark heart — bottom-right corner */
+.letter-paper::after {
+  content: '♡';
+  position: absolute;
+  bottom: 24px;
+  right: 20px;
+  font-size: 5rem;
+  font-family: 'Cormorant Garamond', serif;
+  color: rgba(181,141,72,0.055);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  transform: rotate(-10deg);
+  letter-spacing: 0;
+}
+
+/* Red margin rule — like real writing paper */
+.paper-margin {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 36px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent                  2%,
+    rgba(176,82,62,0.36)         6%,
+    rgba(176,82,62,0.36)         93%,
+    transparent                  97%
+  );
+}
+
+/* Horizontal ruled lines — barely perceptible */
+.paper-rules {
+  position: absolute;
+  inset: 0;
+  padding: 80px 0 0 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.paper-rules span {
+  display: block;
+  height: 1px;
+  background: rgba(181,141,72,0.082);
+  margin-bottom: 31px;
+}
+
+/* Small header ornament */
+.paper-ornament {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.orn-line-sm {
+  display: block;
+  height: 1px;
+  width: 34px;
+  background: linear-gradient(90deg, transparent, var(--gold-lt), transparent);
+}
+
+.orn-star-sm {
+  font-size: 0.50rem;
+  color: var(--gold);
+  line-height: 1;
+  opacity: 0.62;
+}
+
+/* Header */
+.letter-header { margin-bottom: 26px; }
+
+.letter-date {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.63rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.letter-salutation {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.52rem;
+  font-weight: 400;
+  color: var(--warm-dark);
+  line-height: 1.18;
+  font-feature-settings: "liga" 1, "calt" 1, "onum" 1;
+  margin-bottom: 22px;
+}
+
+/* Body paragraphs */
+.letter-para {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.14rem;
+  font-weight: 400;
+  line-height: 1.98;
+  color: var(--text);
+  margin-bottom: 18px;
+  letter-spacing: 0.008em;
+  font-feature-settings: "liga" 1, "calt" 1;
+  hanging-punctuation: first last;
+}
+
+/* Sign-off */
+.letter-signoff {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(181,141,72,0.16);
+}
+
+.signoff-wish {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.24rem;
+  color: var(--warm-dark);
+  line-height: 1.40;
+  margin-bottom: 18px;
+}
+
+.letter-sig {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.44rem;
+  color: var(--rose-deep);
+  line-height: 1.46;
+}
+
+/* Scroll-triggered entrance animations */
+.animate-in {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity   0.88s var(--ease-expo),
+    transform 0.88s var(--ease-expo);
+}
+
+.animate-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delay-1  { transition-delay: 0.08s; }
+.delay-2  { transition-delay: 0.18s; }
+.delay-3  { transition-delay: 0.32s; }
+.delay-4  { transition-delay: 0.46s; }
+.delay-5  { transition-delay: 0.60s; }
+.delay-6  { transition-delay: 0.75s; }
+.delay-7  { transition-delay: 0.90s; }
+
+/* ============================================================
+   REVEALS SECTION
+   ============================================================ */
+.reveals-section {
+  max-width: 480px;
+  width: 100%;
+  margin-top: 36px;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.sl-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-lt), transparent);
+}
+
+.sl-text {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.61rem;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+.reveals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.reveal-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 20px 12px 18px;
+  background: var(--paper);
+  border: 1px solid rgba(181,141,72,0.16);
+  border-top: 2px solid rgba(181,141,72,0.28);
+  border-radius: 12px;
+  transition:
+    transform    0.22s var(--ease-spring),
+    box-shadow   0.22s ease,
+    border-color 0.20s ease,
+    background   0.20s ease;
+  box-shadow:
+    0 3px 18px rgba(50,22,8,0.06),
+    0 1px  5px rgba(50,22,8,0.04);
+  text-align: center;
+}
+
+.reveal-card:active {
+  transform: scale(0.93) translateY(1px);
+  box-shadow:
+    0 1px 8px rgba(50,22,8,0.08),
+    inset 0 0 0 1px rgba(181,141,72,0.22);
+  border-color: var(--blush);
+  background: var(--ivory);
+}
+
+.reveal-card.wide {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  gap: 12px;
+  padding: 16px 22px;
+}
+
+.reveal-icon  { font-size: 1.35rem; line-height: 1; }
+
+.reveal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--warm-mid);
+  line-height: 1.28;
+}
+
+/* ============================================================
+   PHOTOS SECTION
+   ============================================================ */
+.photos-section {
+  max-width: 480px;
+  width: 100%;
+  margin-top: 42px;
+  text-align: center;
+}
+
+.photos-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.97rem;
+  color: var(--text-soft);
+  margin-bottom: 20px;
+  letter-spacing: 0.02em;
+}
+
+.polaroid-stack {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 16px 18px 32px;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 18px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.polaroid-stack::-webkit-scrollbar { display: none; }
+
+.polaroid {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+  position: relative;
+  background: #fffef9;
+  padding: 10px 10px 30px;
+  border-radius: 2px;
+  width: 190px;
+  box-shadow:
+    0 10px 36px rgba(50,22,8,0.19),
+    0  2px  8px rgba(50,22,8,0.10),
+    inset 0 0 0 0.5px rgba(0,0,0,0.04);
+  transform: rotate(var(--rot, 0deg));
+  transition:
+    transform  0.32s var(--ease-spring),
+    box-shadow 0.32s ease;
+}
+
+/* Faint colour strip — polaroid brand reference */
+.polaroid::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blush), var(--gold-lt));
+  opacity: 0.32;
+  border-radius: 2px 2px 0 0;
+}
+
+/* Cast shadow beneath each polaroid */
+.polaroid::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 8%;
+  right: 8%;
+  height: 18px;
+  background: radial-gradient(ellipse at center, rgba(50,22,8,0.28) 0%, transparent 72%);
+  filter: blur(5px);
+}
+
+.polaroid:active {
+  transform: rotate(calc(var(--rot,0deg)*0.25)) scale(1.06);
+  box-shadow: 0 18px 52px rgba(50,22,8,0.26), 0 4px 10px rgba(50,22,8,0.11);
+}
+
+.polaroid img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  border-radius: 1px;
+  min-height: 170px;
+  background: linear-gradient(140deg, #e0cab6, #ecddd0);
+  filter: sepia(0.06) contrast(1.02) brightness(1.01);
+}
+
+.polaroid-caption {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  text-align: center;
+  margin-top: 9px;
+  line-height: 1.25;
+}
+
+.swipe-hint {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  color: rgba(181,141,72,0.44);
+  text-transform: uppercase;
+  margin-top: -14px;
+}
+
+/* ============================================================
+   QUIZ SECTION
+   ============================================================ */
+.quiz-section {
+  max-width: 480px;
+  width: 100%;
+  margin-top: 36px;
+}
+
+.quiz-card {
+  background: var(--paper);
+  border-radius: 12px;
+  padding: 28px 24px 24px;
+  border: 1px solid rgba(181,141,72,0.16);
+  box-shadow:
+    0 4px 28px rgba(50,22,8,0.08),
+    0 1px  6px rgba(50,22,8,0.05),
+    inset 0 0 0 0.5px rgba(217,196,144,0.22);
+}
+
+.quiz-eyebrow {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.quiz-question {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.16rem;
+  color: var(--warm-dark);
+  line-height: 1.50;
+  margin-bottom: 20px;
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.quiz-btn {
+  padding: 12px 8px;
+  background: var(--ivory);
+  border: 1px solid rgba(181,141,72,0.20);
+  border-radius: 10px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.77rem;
+  color: var(--warm-mid);
+  text-align: center;
+  line-height: 1.45;
+  transition:
+    background    0.20s ease,
+    transform     0.18s var(--ease-spring),
+    border-color  0.20s ease,
+    opacity       0.20s ease;
+}
+
+.quiz-btn:active {
+  background: rgba(214,164,138,0.40);
+  transform: scale(0.95);
+  border-color: var(--blush);
+}
+
+.quiz-btn.selected {
+  background: rgba(214,164,138,0.26);
+  border-color: var(--rose);
+}
+
+.quiz-btn.dimmed { opacity: 0.34; }
+
+.quiz-response {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.02rem;
+  color: var(--rose-deep);
+  line-height: 1.76;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.60s var(--ease-expo),
+    opacity    0.48s ease 0.08s;
+}
+
+.quiz-response.show {
+  max-height: 220px;
+  opacity: 1;
+  padding-top: 14px;
+  border-top: 1px solid rgba(181,141,72,0.15);
+}
+
+.to-final-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0 14px;
+  width: 100%;
+  max-width: 480px;
+}
+
+/* ============================================================
+   SCREEN 4 — FINAL WISH
+   ============================================================ */
+#screen-final {
+  text-align: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 94% 72% at 50% 18%, rgba(218,190,144,0.58) 0%, transparent 64%),
+    radial-gradient(ellipse 64% 50% at 16% 84%, rgba(180,107,84,0.26) 0%, transparent 56%),
+    radial-gradient(ellipse 50% 38% at 86% 68%, rgba(181,141,72,0.22) 0%, transparent 50%),
+    linear-gradient(176deg, #f1e4d0 0%, #e7d6bc 52%, #ddc7a7 100%);
+}
+
+/* Soft vignette darkening the edges — makes content feel centre-stage */
+#screen-final::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%,
+    transparent 40%,
+    rgba(42,18,6,0.10) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+#confetti-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.final-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.final-orn {
+  margin-bottom: 22px;
+  opacity: 0;
+  animation: appearFade 0.9s var(--ease-expo) 0.14s forwards;
+}
+
+.final-eyebrow {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+  opacity: 0;
+  animation: fadeUp 0.9s var(--ease-expo) 0.28s forwards;
+}
+
+.final-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(3.0rem, 12.5vw, 4.1rem);
+  line-height: 1.05;
+  color: var(--warm-dark);
+  letter-spacing: -0.018em;
+  margin-bottom: 24px;
+  text-shadow:
+    0 2px 32px rgba(139,65,50,0.14),
+    0 1px  6px rgba(139,65,50,0.08);
+  opacity: 0;
+  animation: fadeUp 1.0s var(--ease-expo) 0.46s forwards;
+}
+
+.final-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--rose-deep);
+  text-shadow: 0 2px 24px rgba(139,65,50,0.22);
+}
+
+.final-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.04rem;
+  line-height: 1.84;
+  color: var(--text-soft);
+  max-width: 292px;
+  margin-bottom: 36px;
+  opacity: 0;
+  animation: fadeUp 0.9s var(--ease-expo) 0.68s forwards;
+}
+
+.final-sig {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.08rem;
+  color: var(--warm-mid);
+  line-height: 1.66;
+  opacity: 0;
+  animation: fadeUp 0.9s var(--ease-expo) 0.92s forwards;
+}
+
+.sig-name {
+  font-size: 1.64rem;
+  color: var(--rose-deep);
+}
+
+/* Rising hearts */
+.final-hearts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.rise-heart {
+  position: absolute;
+  bottom: -24px;
+  opacity: 0;
+  animation:
+    riseUp    var(--rdur, 6s) ease-in     var(--rdelay, 0s) infinite,
+    riseDrift var(--rdur, 6s) ease-in-out var(--rdelay, 0s) infinite;
+}
+
+@keyframes riseUp {
+  0%   { opacity: 0;    transform: translateY(0)      scale(0.66); }
+  10%  { opacity: 0.46; }
+  85%  { opacity: 0.20; }
+  100% { opacity: 0;    transform: translateY(-92vh)  scale(1.12); }
+}
+
+@keyframes riseDrift {
+  0%, 100% { margin-left: 0; }
+  38%       { margin-left: var(--rda, 14px); }
+  72%       { margin-left: var(--rdb, -10px); }
+}
+
+/* ============================================================
+   OVERLAY MODAL — with luxury corner brackets
+   ============================================================ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 8, 2, 0.56);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.38s ease;
+}
+
+.overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.overlay-card {
+  background: var(--paper);
+  border-radius: 20px;
+  padding: 38px 28px 28px;
+  max-width: 352px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  transform: translateY(26px) scale(0.92);
+  opacity: 0;
+  transition:
+    transform 0.56s var(--ease-spring),
+    opacity   0.40s ease;
+  box-shadow:
+    0 32px 92px rgba(0,0,0,0.30),
+    0  8px 26px rgba(0,0,0,0.15),
+    inset 0 0 0 1px rgba(217,196,144,0.28);
+}
+
+.overlay.open .overlay-card {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* Corner brackets — top-left */
+.overlay-card::before {
+  content: '';
+  position: absolute;
+  top: 14px; left: 14px;
+  width: 18px; height: 18px;
+  border-top:  1px solid rgba(181,141,72,0.34);
+  border-left: 1px solid rgba(181,141,72,0.34);
+  border-radius: 2px 0 0 0;
+}
+
+/* Corner brackets — bottom-right */
+.overlay-card::after {
+  content: '';
+  position: absolute;
+  bottom: 14px; right: 14px;
+  width: 18px; height: 18px;
+  border-bottom: 1px solid rgba(181,141,72,0.34);
+  border-right:  1px solid rgba(181,141,72,0.34);
+  border-radius: 0 0 2px 0;
+}
+
+.overlay-ornament {
+  font-size: 0.68rem;
+  color: var(--gold);
+  margin-bottom: 18px;
+  opacity: 0.58;
+  letter-spacing: 0.14em;
+}
+
+.overlay-message {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.14rem;
+  line-height: 1.84;
+  color: var(--text);
+  margin-bottom: 26px;
+  font-feature-settings: "liga" 1, "calt" 1;
+}
+
+.overlay-close {
+  display: inline-block;
+  padding: 11px 34px;
+  background: transparent;
+  border: 1px solid rgba(181,141,72,0.28);
+  border-radius: 100px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--warm-mid);
+  transition:
+    background    0.20s ease,
+    border-color  0.20s ease,
+    transform     0.18s var(--ease-spring);
+}
+
+.overlay-close:active {
+  background: rgba(214,164,138,0.24);
+  border-color: var(--blush);
+  transform: scale(0.96);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (min-width: 390px) {
+  .intro-title  { font-size: 3.25rem; }
+  .letter-para  { font-size: 1.16rem; }
+  .letter-paper { padding: 42px 32px 50px 52px; }
+}
+
+@media (min-width: 600px) {
+  .envelope     { width: 320px; height: 216px; }
+  #screen-letter { padding: 44px 28px 72px; }
+  .letter-paper  { max-width: 520px; }
+}
+
+/* iPhone safe areas — Dynamic Island / notch */
+@supports (padding-top: env(safe-area-inset-top)) {
+  #screen-intro,
+  #screen-envelope,
+  #screen-final {
+    padding-top:    calc(32px + env(safe-area-inset-top));
+    padding-bottom: calc(32px + env(safe-area-inset-bottom));
+  }
+  #screen-letter {
+    padding-top:    calc(38px + env(safe-area-inset-top));
+    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+}

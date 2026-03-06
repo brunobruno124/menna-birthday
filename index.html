@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#f5ece0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>For Menna 🤍</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!--
+    Cormorant Garamond 300/300i/400/400i/500i — all editorial copy
+    Jost 300/400/500 — UI labels, buttons, captions
+  -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Faint paper grain over entire page -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- Background floating particles — persist across all screens -->
+  <div id="hearts-layer" aria-hidden="true"></div>
+
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 1 · INTRO
+  ══════════════════════════════════════════════ -->
+  <section id="screen-intro" class="screen active">
+
+    <!-- Warm ambient glow (slow-orbit animation) -->
+    <div class="intro-glow" aria-hidden="true"></div>
+
+    <div class="intro-content">
+
+      <!-- Gold ornament divider -->
+      <div class="ornament" aria-hidden="true">
+        <span class="orn-line"></span>
+        <span class="orn-diamond">✦</span>
+        <span class="orn-line"></span>
+      </div>
+
+      <!-- ── CUSTOMIZE: eyebrow / title / subtitle ── -->
+      <p class="intro-eyebrow">the 7th of March</p>
+      <h1 class="intro-title">For Menna,<br /><em>my habibty</em></h1>
+      <p class="intro-subtitle">A little birthday letter<br />across the distance</p>
+
+      <button class="btn-primary" id="btn-intro" aria-label="Open the letter">
+        <span class="btn-shimmer" aria-hidden="true"></span>
+        Open the letter
+      </button>
+
+    </div><!-- /.intro-content -->
+
+    <!-- Music: only starts after user tap (mobile browser rules) -->
+    <button class="music-btn" id="music-toggle" aria-label="Toggle background music">
+      <span class="music-note" aria-hidden="true">♪</span>
+      <span class="music-label">play our little soundtrack</span>
+    </button>
+
+    <!-- ── AUDIO: replace assets/music.mp3 with your file ── -->
+    <audio id="bg-music" loop preload="none">
+      <source src="assets/music.mp3" type="audio/mpeg" />
+    </audio>
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 2 · ENVELOPE
+  ══════════════════════════════════════════════ -->
+  <section id="screen-envelope" class="screen">
+
+    <div class="envelope-scene">
+
+      <!--
+        envelope-wrap owns the float animation and the open state.
+        This lets us animate the ground shadow independently.
+      -->
+      <div class="envelope-wrap" id="envelope-wrap">
+
+        <!-- Cast shadow on the "surface" below the envelope -->
+        <div class="envelope-ground" aria-hidden="true"></div>
+
+        <!-- The interactive envelope — tap to open -->
+        <div class="envelope" id="envelope" role="button" aria-label="Open the birthday letter" tabindex="0">
+
+          <!-- Parchment body with interior lining -->
+          <div class="env-body">
+
+            <!-- Airmail postal stripe along top and bottom edge -->
+            <div class="env-postal" aria-hidden="true"></div>
+            <div class="env-postal-bottom" aria-hidden="true"></div>
+
+            <!-- Interior lining — revealed when flap opens -->
+            <div class="env-interior" aria-hidden="true"></div>
+
+            <!-- V-fold crease lines -->
+            <div class="env-crease env-crease-l" aria-hidden="true"></div>
+            <div class="env-crease env-crease-r" aria-hidden="true"></div>
+
+            <!-- Wax seal (embossed ring + specular highlight via ::before / ::after) -->
+            <div class="env-seal" id="env-seal" aria-hidden="true">
+              <span>✦</span>
+            </div>
+
+          </div><!-- /.env-body -->
+
+          <!-- 3-D flap (front + back faces) -->
+          <div class="env-flap-wrap" id="env-flap-wrap">
+            <!-- Outer face — visible when closed -->
+            <div class="env-flap"></div>
+            <!-- Inner face — visible when folded open (lighter parchment) -->
+            <div class="env-flap-back" aria-hidden="true"></div>
+          </div>
+
+          <!-- Letter edge peeking out after open -->
+          <div class="env-letter-peek" id="letter-peek" aria-hidden="true">
+            <div class="peek-top-rule"></div>
+            <div class="peek-line"></div>
+            <div class="peek-line short"></div>
+            <div class="peek-line"></div>
+            <div class="peek-line shorter"></div>
+          </div>
+
+        </div><!-- /.envelope -->
+
+      </div><!-- /.envelope-wrap -->
+
+      <!-- Tap hint + ghost button sit outside the float wrapper -->
+      <p class="envelope-hint" id="envelope-hint">tap to open</p>
+      <button class="btn-ghost" id="btn-envelope">Open the letter</button>
+
+    </div><!-- /.envelope-scene -->
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 3 · LETTER  (scrollable)
+  ══════════════════════════════════════════════ -->
+  <section id="screen-letter" class="screen">
+
+    <!-- ── Letter paper card ── -->
+    <div class="letter-paper" id="letter-paper">
+
+      <!-- Left red margin rule (real writing-paper detail) -->
+      <div class="paper-margin" aria-hidden="true"></div>
+
+      <!-- Faint horizontal ruled lines -->
+      <div class="paper-rules" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+      </div>
+
+      <!-- Header ornament on paper -->
+      <div class="paper-ornament animate-in" aria-hidden="true">
+        <span class="orn-line-sm"></span>
+        <span class="orn-star-sm">✦</span>
+        <span class="orn-line-sm"></span>
+      </div>
+
+      <!-- Date + salutation -->
+      <div class="letter-header animate-in delay-1">
+        <p class="letter-date">March 7th, 2025</p>
+        <p class="letter-salutation">My dearest Menna,</p>
+      </div>
+
+      <!-- ══ CUSTOMIZE LETTER TEXT HERE ══ -->
+      <div class="letter-body">
+
+        <p class="letter-para animate-in delay-2">
+          Happy birthday, hayati. Your real one — the 7th —
+          the one I've been quietly counting down to for weeks.
+        </p>
+
+        <p class="letter-para animate-in delay-3">
+          I wanted to send you a proper letter, the kind with an envelope
+          and a stamp and your name written slowly on the front. But between
+          the post office, the border, and honestly — auntie Azza — a digital
+          one felt safer. So here we are.
+        </p>
+
+        <p class="letter-para animate-in delay-4">
+          I sit here in Croatia thinking about how far Egypt is, and somehow
+          it still doesn't feel real that the same sky stretches between us.
+          I am proud of you every single day, Manoony — the long hospital
+          shifts, the cases you carry home in your head, the doctor you are
+          becoming. I mean it with everything in me.
+        </p>
+
+        <p class="letter-para animate-in delay-5">
+          This winter, I want to come find you. Walk through your city, sit
+          somewhere warm with you, and just be in the same room for a while.
+          That's all I want.
+        </p>
+
+        <p class="letter-para animate-in delay-6">
+          And one day — not too far from now — we're going to travel somewhere
+          neither of us has been. A lot of somewheres, actually. There will be
+          a little dog too. You'll name her. I've already decided that.
+        </p>
+
+        <!-- Sign-off -->
+        <div class="letter-signoff animate-in delay-7">
+          <p class="signoff-wish">Make a wish, habibty. 🤍</p>
+          <p class="letter-sig">With everything,<br /><em>Bruno</em></p>
+        </div>
+
+      </div><!-- /.letter-body -->
+
+    </div><!-- /.letter-paper -->
+
+
+    <!-- ── Hidden reveal cards ── -->
+    <!-- ══ CUSTOMIZE: edit data-message text below ══ -->
+    <div class="reveals-section">
+      <div class="section-label" aria-hidden="true">
+        <span class="sl-line"></span>
+        <span class="sl-text">a few little things</span>
+        <span class="sl-line"></span>
+      </div>
+      <div class="reveals-grid">
+
+        <button class="reveal-card"
+          data-message="Your real birthday is March 7th. The papers say the 9th. Your tata told the man at the registry office the wrong day, and somehow it stuck — on every document, every ID, every official thing. So technically, you get two birthdays. I think that's very on brand for you.">
+          <span class="reveal-icon">📜</span>
+          <span class="reveal-title">The birthday mystery</span>
+        </button>
+
+        <button class="reveal-card"
+          data-message="You are in your clinical years. You go into wards and you see real patients and you carry that with you. I know it's heavy sometimes. I want you to know I see how hard you work, and I think you're going to be an extraordinary doctor. I'm already a little proud as if you're my favourite doctor in the world — and you're not even done yet.">
+          <span class="reveal-icon">🩺</span>
+          <span class="reveal-title">Something I'm proud of</span>
+        </button>
+
+        <button class="reveal-card"
+          data-message="One day we are going to stand somewhere completely new — maybe a tiny town in the south of France, or a rooftop in Istanbul, or somewhere neither of us can even picture yet — and we'll look at each other and think, yes. This is exactly where we were supposed to end up. I can feel it.">
+          <span class="reveal-icon">✈️</span>
+          <span class="reveal-title">A future memory</span>
+        </button>
+
+        <button class="reveal-card"
+          data-message="There is going to be a dog. Small and ridiculous, probably. With a name only you could come up with. She's going to sleep on the couch and look at you like you're the whole world. Honestly? Same.">
+          <span class="reveal-icon">🐾</span>
+          <span class="reveal-title">A little secret</span>
+        </button>
+
+        <!-- Full-width fifth card -->
+        <button class="reveal-card wide"
+          data-message="I really did want to send a physical letter. I had it planned. But then I thought about it arriving late, or not at all, or arriving to the wrong hands — so this is it. A letter that travels at the speed of the internet, because even from Croatia, I didn't want to be late.">
+          <span class="reveal-icon">💌</span>
+          <span class="reveal-title">One more wish</span>
+        </button>
+
+      </div>
+    </div><!-- /.reveals-section -->
+
+
+    <!-- ── Photo gallery ── -->
+    <!-- ══ REPLACE: drop photo1.jpg – photo4.jpg into /assets/ ══ -->
+    <div class="photos-section">
+      <p class="photos-label"><em>a few little pieces of you I love</em></p>
+      <div class="polaroid-stack" id="polaroid-stack">
+
+        <div class="polaroid" style="--rot:-2.5deg;">
+          <img src="assets/photo1.jpg" alt="Menna" loading="lazy" />
+          <p class="polaroid-caption">hayati 🤍</p>
+        </div>
+        <div class="polaroid" style="--rot:1.8deg;">
+          <img src="assets/photo2.jpg" alt="Menna" loading="lazy" />
+          <p class="polaroid-caption">my favourite person</p>
+        </div>
+        <div class="polaroid" style="--rot:-1.2deg;">
+          <img src="assets/photo3.jpg" alt="Menna" loading="lazy" />
+          <p class="polaroid-caption">cutie ✦</p>
+        </div>
+        <div class="polaroid" style="--rot:2.2deg;">
+          <img src="assets/photo4.jpg" alt="Menna" loading="lazy" />
+          <p class="polaroid-caption">my Manoony</p>
+        </div>
+
+      </div>
+      <p class="swipe-hint">· swipe ·</p>
+    </div>
+
+
+    <!-- ── Playful birthday quiz ── -->
+    <!-- ══ CUSTOMIZE: data-response messages below ══ -->
+    <div class="quiz-section">
+      <div class="quiz-card">
+        <p class="quiz-eyebrow">Since your papers insist on being dramatic…</p>
+        <p class="quiz-question">What should the birthday girl watch on March&nbsp;9th?</p>
+        <div class="quiz-options">
+
+          <button class="quiz-btn"
+            data-response="Something impossibly romantic, obviously. Candlelight, longing glances, a scene that makes you text me immediately. You have excellent taste.">
+            💞 romantic
+          </button>
+
+          <button class="quiz-btn"
+            data-response="Something so ridiculous you forget what day it is. Laugh until you snort. You deserve that kind of happy today.">
+            😂 funny
+          </button>
+
+          <button class="quiz-btn"
+            data-response="A film so gorgeous and melancholy it makes the whole world feel softer. You'll cry a little. That's allowed. You're a doctor in training — you're allowed to feel things.">
+            🌧️ sad but pretty
+          </button>
+
+          <button class="quiz-btn"
+            data-response="Bold choice. The universe will choose for you. Whatever plays tonight — that's the one. Happy official-documents birthday, Manoony. ✦">
+            ✨ surprise me
+          </button>
+
+        </div>
+        <div class="quiz-response" id="quiz-response"></div>
+      </div>
+    </div>
+
+
+    <!-- Continue to final screen -->
+    <div class="to-final-wrap">
+      <button class="btn-primary glow" id="btn-to-final">
+        <span class="btn-shimmer" aria-hidden="true"></span>
+        Make a wish ✦
+      </button>
+    </div>
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 4 · FINAL WISH
+  ══════════════════════════════════════════════ -->
+  <section id="screen-final" class="screen">
+
+    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+    <div class="final-content">
+
+      <div class="ornament final-orn" aria-hidden="true">
+        <span class="orn-line"></span>
+        <span class="orn-diamond">✦</span>
+        <span class="orn-line"></span>
+      </div>
+
+      <!-- ── CUSTOMIZE: final message ── -->
+      <p class="final-eyebrow">Happy birthday, my love</p>
+      <h2 class="final-title">Make a wish,<br /><em>habibty.</em></h2>
+      <p class="final-sub">
+        Wherever you are right now — in the hospital corridor,
+        in your room, half-asleep — I hope today feels like
+        a small, warm beginning.
+      </p>
+      <div class="final-sig">
+        <p>With all my love,</p>
+        <p class="sig-name"><em>Bruno</em></p>
+      </div>
+
+    </div><!-- /.final-content -->
+
+    <!-- Rising hearts layer -->
+    <div class="final-hearts" aria-hidden="true" id="final-hearts"></div>
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       REVEAL MODAL
+  ══════════════════════════════════════════════ -->
+  <div id="reveal-overlay" class="overlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="overlay-card" id="overlay-card">
+      <div class="overlay-ornament" aria-hidden="true">✦ &nbsp; ✦ &nbsp; ✦</div>
+      <p class="overlay-message" id="overlay-message"></p>
+      <button class="overlay-close" id="overlay-close" aria-label="Close message">close</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
