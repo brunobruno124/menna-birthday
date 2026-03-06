@@ -98,11 +98,19 @@ function openEnvelope() {
   }, 1600);
 }
 
-envelope.addEventListener('click', openEnvelope);
-envelope.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); }
-});
-btnEnvelope.addEventListener('click', openEnvelope);
+if (envelope) {
+  envelope.addEventListener('click', openEnvelope);
+  envelope.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openEnvelope();
+    }
+  });
+}
+
+if (btnEnvelope) {
+  btnEnvelope.addEventListener('click', openEnvelope);
+}
 
 
 /* ════════════════════════════════════════════════════════════
